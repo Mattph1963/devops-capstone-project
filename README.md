@@ -1,5 +1,7 @@
 # DevOps Capstone Template
 
+![Build Status](https://github.com/Mattph1963/devops-capstone-project/actions/workflows/ci-build.yaml/badge.svg)
+
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python 3.9](https://img.shields.io/badge/Python-3.9-green.svg)](https://shields.io/)
 
@@ -15,19 +17,19 @@ Do Not fork this code! It is meant to be used by pressing the  <span style=color
 
 These labs are designed to be executed in the IBM Developer Skills Network Cloud IDE with OpenShift. Please use the links provided in the Coursera Capstone project to access the lab environment.
 
-Once you are in the lab environment, you can initialize it with `bin/setup.sh` by sourcing it. (*Note: DO NOT run this program as a bash script. It sets environment variable and so must be sourced*):
+Once you are in the lab environment, you can initialize it with bin/setup.sh by sourcing it. (*Note: DO NOT run this program as a bash script. It sets environment variable and so must be sourced*):
 
-```bash
+bash
 source bin/setup.sh
-```
+
 
 This will install Python 3.9, make it the default, modify the bash prompt, create a Python virtual environment and activate it.
 
 After sourcing it you prompt should look like this:
 
-```bash
+bash
 (venv) theia:project$
-```
+
 
 ## Useful commands
 
@@ -37,33 +39,33 @@ Under normal circumstances you should not have to run these commands. They are p
 
 You can activate the Python 3.9 environment with:
 
-```bash
+bash
 source ~/venv/bin/activate
-```
+
 
 ### Installing Python dependencies
 
-These dependencies are installed as part of the setup process but should you need to install them again, first make sure that the Python 3.9 virtual environment is activated and then use the `make install` command:
+These dependencies are installed as part of the setup process but should you need to install them again, first make sure that the Python 3.9 virtual environment is activated and then use the make install command:
 
-```bash
+bash
 make install
-```
+
 
 ### Starting the Postgres Docker container
 
 The labs use Postgres running in a Docker container. If for some reason the service is not available you can start it with:
 
-```bash
+bash
 make db
-```
 
-You can use the `docker ps` command to make sure that postgres is up and running.
+
+You can use the docker ps command to make sure that postgres is up and running.
 
 ## Project layout
 
-The code for the microservice is contained in the `service` package. All of the test are in the `tests` folder. The code follows the **Model-View-Controller** pattern with all of the database code and business logic in the model (`models.py`), and all of the RESTful routing on the controller (`routes.py`).
+The code for the microservice is contained in the service package. All of the test are in the tests folder. The code follows the **Model-View-Controller** pattern with all of the database code and business logic in the model (models.py), and all of the RESTful routing on the controller (routes.py).
 
-```text
+text
 ├── service         <- microservice package
 │   ├── common/     <- common log and error handlers
 │   ├── config.py   <- Flask configuration object
@@ -75,7 +77,7 @@ The code for the microservice is contained in the `service` package. All of the 
     ├── test_cli_commands.py    <- CLI tests
     ├── test_models.py          <- model unit tests
     └── test_routes.py          <- route unit tests
-```
+
 
 ## Data Model
 
@@ -92,7 +94,7 @@ The Account model contains the following fields:
 
 ## Your Task
 
-Complete this microservice by implementing REST API's for `READ`, `UPDATE`, `DELETE`, and `LIST` while maintaining **95%** code coverage. In true **Test Driven Development** fashion, first write tests for the code you "wish you had", and then write the code to make them pass.
+Complete this microservice by implementing REST API's for READ, UPDATE, DELETE, and LIST while maintaining **95%** code coverage. In true **Test Driven Development** fashion, first write tests for the code you "wish you had", and then write the code to make them pass.
 
 ## Local Kubernetes Development
 
@@ -104,21 +106,24 @@ Please only use these commands for working stand-alone on your own computer with
 
 1. Bring up a local K3D Kubernetes cluster
 
-    ```bash
+    
+bash
     $ make cluster
-    ```
+
 
 2. Install Tekton
 
-    ```bash
+    
+bash
     $ make tekton
-    ```
+
 
 3. Install the ClusterTasks that the Cloud IDE has
 
-    ```bash
+    
+bash
     $ make clustertasks
-    ```
+
 
 You can now perform Tekton development locally, just like in the Cloud IDE lab environment.
 

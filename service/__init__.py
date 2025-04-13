@@ -39,4 +39,12 @@ except Exception as error:  # pylint: disable=broad-except
     # gunicorn requires exit code 4 to stop spawning workers when they die
     sys.exit(4)
 
+# Add security headers to all responses
+@app.after_request
+def add_security_headers(response):
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    return response
+
 app.logger.info("Service initialized!")

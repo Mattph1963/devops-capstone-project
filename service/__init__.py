@@ -50,4 +50,3 @@ def add_security_headers(response):
 
 
 app.logger.info("Service initialized!")
-

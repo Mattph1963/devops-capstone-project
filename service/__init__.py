@@ -60,3 +60,7 @@ try:
 except Exception as error:  # Handle database connection issues
     app.logger.critical("%s: Cannot continue", error)
     sys.exit(4)
+
+# Make sure to expose the 'app' variable to be used in the entry point
+if __name__ == "__main__":
+    app.run(debug=True)

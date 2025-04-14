@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  accounts:
+    build:
+      context: .
+    environment:
+      DATABASE_URI: "postgresql://postgres:postgres@db:5432/postgres"  # Link to db service
+      SECRET_KEY: "s3cr3t-key-shhhh"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+volumes:
+  pgdata:

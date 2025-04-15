@@ -1,28 +1,17 @@
-# Use an official Python runtime as a parent image
+# Use an official Python runtime as the base image
 FROM python:3.9-slim
 
-# Set the working directory in the container
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the requirements file into the container
-COPY requirements.txt .
+# Copy the current directory contents into the container
+COPY . /app
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the application contents
-COPY service/ ./service/
-
-# Set environment variable for database URI (you can override this at runtime)
-ENV DATABASE_URI=postgresql://postgres:postgres@postgresql:5432/postgres
-
-# Switch to a non-root user
-RUN useradd --uid 1000 theia && chown -R theia /app
-USER theia
-
 # Expose the port the app runs on
 EXPOSE 8080
 
-# Command to run the app with Gunicorn
+# Define the start command for the app
 CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8080", "service:create_app"]
-

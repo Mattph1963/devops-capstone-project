@@ -24,4 +24,5 @@ USER theia
 EXPOSE 8080
 
 # Command to run the app with Gunicorn
-CMD ["gunicorn", "--bind=0.0.0.0:8080", "--log-level=info", "service:app"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8080", "service:create_app"]
+

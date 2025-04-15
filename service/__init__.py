@@ -11,10 +11,9 @@ def create_app():
     # Use DATABASE_URL from environment, fallback to your Render DB
     database_url = os.getenv(
         "DATABASE_URL",
-        "postgresql://accounts_db_7z73_user:ix3r5IlbmYB72Zio7KVGTNK6ffxe14VV@dpg-cvubj13e5dus73cie8t0-a.singapore-postgres.render.com/accounts_db_7z73"
+        "postgresql://your_database_url_here"
     )
 
-    # Fix legacy postgres:// scheme if needed
     if database_url.startswith("postgres://"):
         database_url = database_url.replace("postgres://", "postgresql://", 1)
 
@@ -23,7 +22,6 @@ def create_app():
 
     db.init_app(app)
 
-    # Import and register routes inside app context to avoid circular imports
     from . import routes, models
     app.register_blueprint(routes.api)
 
@@ -32,7 +30,7 @@ def create_app():
     app.logger.info(70 * "*")
 
     try:
-        models.init_db(app)  # Initialize database
+        models.init_db(app)
     except Exception as error:
         app.logger.critical("%s: Cannot continue", error)
         sys.exit(4)

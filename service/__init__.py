@@ -8,10 +8,13 @@ db = SQLAlchemy()
 def create_app():
     app = Flask(__name__)
 
-    # Use DATABASE_URL from environment, fallback to local SQLite for dev
-    database_url = os.getenv("DATABASE_URL", "sqlite:///development.db")
-    
-    # Adjust Render's PostgreSQL URL for SQLAlchemy (if needed)
+    # Use DATABASE_URL from environment, fallback to your Render DB
+    database_url = os.getenv(
+        "DATABASE_URL",
+        "postgresql://accounts_db_7z73_user:ix3r5IlbmYB72Zio7KVGTNK6ffxe14VV@dpg-cvubj13e5dus73cie8t0-a.singapore-postgres.render.com/accounts_db_7z73"
+    )
+
+    # Fix legacy postgres:// scheme if needed
     if database_url.startswith("postgres://"):
         database_url = database_url.replace("postgres://", "postgresql://", 1)
 
@@ -20,8 +23,8 @@ def create_app():
 
     db.init_app(app)
 
-    # Import and register routes *inside* the create_app function
-    from . import routes  # Import here to avoid circular import
+    # Import and register routes inside app context to avoid circular imports
+    from . import routes, models
     app.register_blueprint(routes.api)
 
     app.logger.info(70 * "*")
@@ -29,15 +32,13 @@ def create_app():
     app.logger.info(70 * "*")
 
     try:
-        models.init_db(app)  # Initialize the database tables
-    except Exception as error:  # Catch broad exceptions (e.g., database issues)
+        models.init_db(app)  # Initialize database
+    except Exception as error:
         app.logger.critical("%s: Cannot continue", error)
         sys.exit(4)
 
-    # Add security headers to all responses
     @app.after_request
     def add_security_headers(response):
-        """Function to add security headers to every response"""
         response.headers['X-Frame-Options'] = 'SAMEORIGIN'
         response.headers['X-XSS-Protection'] = '1; mode=block'
         response.headers['X-Content-Type-Options'] = 'nosniff'
@@ -45,18 +46,6 @@ def create_app():
         response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
         return response
 
-    # Log that the service has started
     app.logger.info("Service initialized!")
 
-    # Check if we can connect to the database and set up tables
-    try:
-        models.init_db(app)
-    except Exception as error:  # Handle database connection issues
-        app.logger.critical("%s: Cannot continue", error)
-        sys.exit(4)
-
     return app
-
-# Make sure to expose the 'app' variable to be used in the entry point
-if __name__ == "__main__":
-    app.run(debug=True)

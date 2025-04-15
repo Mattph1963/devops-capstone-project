@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: accounts-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: accounts-api
+  template:
+    metadata:
+      labels:
+        app: accounts-api
+    spec:
+      containers:
+        - name: accounts-api
+          image: mattph1963/devops-capstone-project:latest  # Change if your DockerHub image is named differently
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DATABASE_URI
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: DATABASE_URI

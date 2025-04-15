@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-capstone-project
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: devops-capstone-project
+  template:
+    metadata:
+      labels:
+        app: devops-capstone-project
+    spec:
+      containers:
+      - name: devops-capstone-project
+        image: your-dockerhub-username/devops-capstone-project:v1  # Replace with your Docker image name
+        ports:
+        - containerPort: 8080

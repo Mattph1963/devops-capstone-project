@@ -7,16 +7,14 @@ import sys
 db = SQLAlchemy()
 
 def create_app():
-    # Create and configure the Flask application
     app = Flask(__name__)
 
-    # Use DATABASE_URL from environment, fallback to your Render DB
+    # Use DATABASE_URL from environment or fallback
     database_url = os.getenv(
         "DATABASE_URL",
         "postgresql://accounts_db_7z73_user:ix3r5IlbmYB72Zio7KVGTNK6ffxe14VV@dpg-cvubj13e5dus73cie8t0-a.singapore-postgres.render.com/accounts_db_7z73"
     )
 
-    # Fix legacy postgres:// scheme
     if database_url.startswith("postgres://"):
         database_url = database_url.replace("postgres://", "postgresql://", 1)
 
@@ -25,13 +23,12 @@ def create_app():
 
     db.init_app(app)
 
-    # Import routes and models to register them
     from . import routes, models
     app.register_blueprint(routes.api)
 
-    app.logger.info("*" * 70)
+    app.logger.info(70 * "*")
     app.logger.info("  A C C O U N T   S E R V I C E   R U N N I N G  ".center(70, "*"))
-    app.logger.info("*" * 70)
+    app.logger.info(70 * "*")
 
     try:
         models.init_db(app)
@@ -49,8 +46,7 @@ def create_app():
         return response
 
     app.logger.info("Service initialized!")
-
     return app
 
-# 👇👇 This is critical: expose the app directly for WSGI servers like Gunicorn
+# ✅ ADD THIS LINE: This creates the app so Gunicorn can use it directly
 app = create_app()

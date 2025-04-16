@@ -16,6 +16,7 @@ spec:
     - name: branch
       default: main
   tasks:
+    # Task to initialize the workspace
     - name: init
       workspaces:
         - name: source
@@ -23,6 +24,7 @@ spec:
       taskRef:
         name: cleanup
 
+    # Clone task to fetch the code from the specified Git repository
     - name: clone
       workspaces:
         - name: output
@@ -30,9 +32,24 @@ spec:
       taskRef:
         name: git-clone
       params:
-      - name: url
-        value: $(params.repo-url)
-      - name: revision
-        value: $(params.branch)
+        - name: url
+          value: $(params.repo-url)
+        - name: revision
+          value: $(params.branch)
       runAfter:
         - init
+
+    # Lint task to analyze the code using flake8
+    - name: lint
+      workspaces:
+        - name: source
+          workspace: pipeline-workspace
+      taskRef:
+        name: flake8
+      params:
+        - name: image
+          value: python:3.9-slim
+        - name: args
+          value: "--count --max-complexity=10 --max-line-length=127 --statistics"
+      runAfter:
+        - clone

@@ -1,9 +1,9 @@
 # Use official lightweight Python image
 FROM python:3.9-slim
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+# Set environment variables (correct syntax)
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 # Set working directory
 WORKDIR /app
@@ -17,10 +17,10 @@ RUN apt-get update \
 COPY requirements.txt /app/
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Copy project files
+# Copy project files into the container
 COPY . /app/
 
-# Create a non-root user for security
+# Create a non-root user for security purposes
 RUN useradd --uid 1000 theia && chown -R theia /app
 USER theia
 
@@ -28,4 +28,5 @@ USER theia
 EXPOSE 8080
 
 # Start the app using Gunicorn, pointing to your Flask app factory function
+# 'service:create_app' assumes you have a factory function 'create_app' inside the 'service' module
 CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8080", "service:create_app"]

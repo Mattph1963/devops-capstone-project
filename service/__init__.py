@@ -6,7 +6,7 @@ import sys
 # Initialize the database object
 db = SQLAlchemy()
 
-def create_app():
+def create_app(environ=None, start_response=None):
     app = Flask(__name__)
 
     # Use DATABASE_URL from environment or fallback
@@ -23,19 +23,23 @@ def create_app():
 
     db.init_app(app)
 
+    # Import routes and models after db initialization
     from . import routes, models
     app.register_blueprint(routes.api)
 
+    # Log initialization message
     app.logger.info(70 * "*")
     app.logger.info("  A C C O U N T   S E R V I C E   R U N N I N G  ".center(70, "*"))
     app.logger.info(70 * "*")
 
+    # Initialize the database
     try:
         models.init_db(app)
     except Exception as error:
         app.logger.critical("%s: Cannot continue", error)
         sys.exit(4)
 
+    # Security headers
     @app.after_request
     def add_security_headers(response):
         response.headers['X-Frame-Options'] = 'SAMEORIGIN'
@@ -43,10 +47,4 @@ def create_app():
         response.headers['X-Content-Type-Options'] = 'nosniff'
         response.headers['Content-Security-Policy'] = "default-src 'self'; object-src 'none'"
         response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
-        return response
-
-    app.logger.info("Service initialized!")
-    return app
-
-# ✅ ADD THIS LINE: This creates the app so Gunicorn can use it directly
-app = create_app()
+        return

@@ -20,9 +20,12 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 # Copy project files
 COPY . /app/
 
-# Expose port
+# Create a non-root user for security
+RUN useradd --uid 1000 theia && chown -R theia /app
+USER theia
+
+# Expose port for the app to run on
 EXPOSE 8080
 
 # Start the app using Gunicorn, pointing to your Flask app factory function
-# 'service' is the folder where __init__.py is located and 'create_app' is your factory function
 CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8080", "service:create_app"]
